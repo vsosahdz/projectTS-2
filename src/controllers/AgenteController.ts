@@ -44,3 +44,5 @@ class AgenteController extends AbstractController{
         }
     }
 }
+
+export default AgenteController;

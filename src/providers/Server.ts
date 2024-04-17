@@ -9,10 +9,11 @@ class Server{
     private port!: number;
     private env!: string;
 
-    contructor(appInit:{port:number;env:string;middlewares:any[];controllers:AbstractController[]}){
+    constructor(appInit:{port:number;env:string;middlewares:any[];controllers:AbstractController[]}){
         this.app = express();
         this.port = appInit.port;
         this.env = appInit.env; 
+        this.loadMiddlewares(appInit.middlewares);
         this.loadRoutes(appInit.controllers);  
         this.connectDB();    
     }
@@ -22,6 +23,13 @@ class Server{
             this.app.use(`/${controller.prefix}`,controller.router);
         })
     }
+
+    private loadMiddlewares(middlewares:any[]){
+        middlewares.forEach(middleware=>{
+            this.app.use(middleware);
+        })
+    }
+
     private async connectDB(){
         await db.sequelize.sync();
     }
