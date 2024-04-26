@@ -17,10 +17,20 @@ class AgenteController extends AbstractController{
     protected initializeRoutes(): void {
         this.router.get("/test",this.getTest.bind(this));
         //CRUD
-        //this.router.get("/consultar",);
+        this.router.get("/consultar",this.getConsultar.bind(this));
         this.router.post("/crear",this.postCrear.bind(this));
         //this.router.post("/cambiar",);
         //this.router.post("/eliminar",);       
+    }
+    private async getConsultar(req:Request,res:Response){
+        try{
+            console.log("Consultar agentes");
+            let agentes = await db["Agente"].findAll();
+            res.status(200).json(agentes);
+        }catch(err){
+            console.error(err);
+            res.status(500).send("Error al consultar agentes");
+        }
     }
 
     private async postCrear(req: Request, res: Response){
