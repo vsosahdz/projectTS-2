@@ -1,6 +1,7 @@
 import { Request,Response } from "express";
 import AbstractController from "./AbstractController";
 import db from "../models";
+import DepartamentModel from "../modelsNOSQL/departamentoNOSQL";
 
 class AgenteController extends AbstractController{
     //Singleton
@@ -19,9 +20,34 @@ class AgenteController extends AbstractController{
         //CRUD
         this.router.get("/consultar",this.getConsultar.bind(this));
         this.router.post("/crear",this.postCrear.bind(this));
+        this.router.post("/crearDepto", this.postCrearDepto.bind(this));
+        this.router.get("/consultaDepto",this.getConsultaDepto.bind(this));
         //this.router.post("/cambiar",);
         //this.router.post("/eliminar",);       
     }
+    private async getConsultaDepto(req:Request,res:Response){
+        try{
+            const deptos = await DepartamentModel.scan().exec().promise();
+            res.status(200).send(deptos[0].Items);
+            console.log(deptos);
+        }catch(err){
+            console.error(err);
+            res.status(500).send("Error al consultar departamentos");
+        }
+    }
+
+    private async postCrearDepto(req: Request, res: Response){
+        try{    
+            console.log(req.body);
+            await DepartamentModel.create(req.body);
+            console.log("Departamento creado");
+            res.status(200).send("Departamento creado");
+        }catch(err){
+            console.log(err);
+            res.status(500).send("Error al crear departamento");
+        }
+    }
+
     private async getConsultar(req:Request,res:Response){
         try{
             console.log("Consultar agentes");
